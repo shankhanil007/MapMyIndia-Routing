@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title></title>
+    <body>
+    
+
+
+        <script type="text/javascript">
+            function jsonp(url, callback) {
+        const callbackName =
+          "jsonp_callback_" + Math.round(100000 * Math.random());
+        const script = document.createElement("script");
+        script.src =
+          url +
+          (url.indexOf("?") >= 0 ? "&" : "?") +
+          "callback=" +
+          callbackName;
+        document.body.appendChild(script);
+        window[callbackName] = function (data) {
+          delete window[callbackName];
+          document.body.removeChild(script);
+          callback(data);
+        };
+      }
+
+        function decode(encoded) 
+        {
+            var points = [],index = 0, len = encoded.length;
+            var lat = 0, lng = 0;
+            while (index < len) {
+                var b, shift = 0, result = 0;
+                do {
+                    b = encoded.charAt(index++).charCodeAt(0) - 63;
+                    result |= (b & 0x1f) << shift;
+                    shift += 5;
+                } while (b >= 0x20);
+            var dlat = ((result & 1) != 0 ? ~(result >> 1) : (result >> 1));
+                lat += dlat;shift = 0;result = 0;
+                do {
+                    b = encoded.charAt(index++).charCodeAt(0) - 63;
+                    result |= (b & 0x1f) << shift;
+                    shift += 5;
+                } while (b >= 0x20);
+                var dlng = ((result & 1) != 0 ? ~(result >> 1) : (result >> 1));
+                lng += dlng;points.push([lat / 1E5, lng / 1E5])
+            }
+            return points
+        }
+
+            jsonp(
+          "https://apis.mapmyindia.com/advancedmaps/v1/9f304d2e1edaf328e9ece7bb8cf7e8b4/route_adv/driving/77.131123,28.552413;17ZUL7?steps=false&rtype=1",
+          function (data) {
+            console.log(data);
+            for (i = 0; i < data.routes.length; i++) 
+            {
+                console.log(decode(data.routes[i].geometry));
+            }
+            // alert(JSON.stringify(data));
+          }
+        );
+
+
+            // var val = '{"routes":[{"legs":[{"steps":[],"weight":29809.9,"distance":16829.6,"summary":"","duration":1644.1}],"weight_name":"distance","geometry":"msgmDwtwuMnZla@_a@ob@ce@mKmbAqF_HqHaYql@kz@{QuFkEim@ipBs~@axB_KcOzQ{TpCwOyZ}}@uG_ChAgIwDaLgDaC{d@a@aWox@}C_BLcFq\\maAmOkXm@oEhCQ","weight":29809.9,"distance":16829.6,"duration":1644.1}],"code":"Ok","Server":"Adv-5200","waypoints":[{"hint":"r0ABgP___3_1AAAAGgEAAJ4_AABICAAAFbHDQdvIakAR7cpEe7pTQw0AAAAQAAAAogMAAHkAAACUAAAAnO2YBMesswFz7ZgE3ayzARoAPw1QUDXe","distance":4.694155,"location":[77.131164,28.552391],"name":"Delhi Gurgaon Expressway"},{"hint":"XGIagnZiGoK8MgAAwUEAAAAAAAAN5gAAB4L5QJGDIEEAAAAA2oUNQi4AAAA9AAAAAAAAANQAAACUAAAAW4WaBOrQtAHbhJoE9tC0AQAAnwtQUDXe","distance":12.587623,"location":[77.235547,28.627178],"name":""}]}';
+            // // val = JSON.parse(json);
+            // console.log(val.code)
+            
+            // for (i = 0; i < json.routes.length; i++) 
+            // {
+            //     console.log(decode(data.routes[i].geometry));
+            // }
+            
+        
+        </script>
+   
+  </body>
+</html>
